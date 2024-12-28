@@ -1,34 +1,45 @@
 <script setup>
-import { useRegistrationStore } from '../store';
+import { ref } from 'vue';
+import { createUserWithEmailAndPassword, updateProfile, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { auth } from "../firebase";
 import { useRouter } from 'vue-router';
-import Header from '../components/Header.vue'
-import Footer from '../components/Footer.vue'
+import { useStore } from "../store"
 
-const store = useRegistrationStore();
+const firstName = ref('');
+const lastName = ref('');
+const email = ref('');
+const password = ref('');
+const confirmPassword = ref('');
 const router = useRouter();
+const store = useStore();
 
-const validateForm = (event) => {
-  if (store.password !== store.rePassword) {
-    event.preventDefault(); 
-    alert('The passwords do not match. Please check and try again.');
-  } else {
-    store.setRegistrationData({
-      firstName: store.firstName,
-      lastName: store.lastName,
-      email: store.email,
-      password: store.password,
-    });
-
-    router.push('/movies')
+async function registerByEmail() {
+  try {
+    const user = (await createUserWithEmailAndPassword(auth, email.value, password.value)).user;
+    await updateProfile(user, { displayName: `${firstName.value} ${lastName.value}` });
+    store.user = user;
+    router.push("/movies");
+  } catch (error) {
+    alert("There was an error creating a user with email!");
   }
-};
+}
+
+async function registerByGoogle() {
+  try {
+    const user = (await signInWithPopup(auth, new GoogleAuthProvider())).user;
+    store.user = user;
+    router.push("/movies/all");
+  } catch (error) {
+    alert("There was an error creating a user with Google!");
+  }
+}
 </script>
 
 <template>
   <Header />
   <div class="form-container">
     <h2>Create an Account</h2>
-      <form @submit="validateForm">
+      <form @submit.prevent="registerByEmail()">
         <input type="text" placeholder="First Name" class="input-field" v-model="store.firstName" required />
         <input type="text" placeholder="Last Name" class="input-field" v-model="store.lastName" required />
         <input type="email" placeholder="Email" class="input-field" v-model="store.email" required />
@@ -37,6 +48,7 @@ const validateForm = (event) => {
         <button type="submit" class="register">Register</button>
       </form>
     </div>
+    <button @click="registerByGoogle()" class="button register">Register by Google</button>
     <Footer />
 </template>
 
@@ -103,3 +115,4 @@ const validateForm = (event) => {
   color: hotpink;
 }
 </style>
+

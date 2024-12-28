@@ -1,43 +1,26 @@
-import { defineStore } from 'pinia';
-import { ref, onMounted } from 'vue';
+// import { defineStore } from 'pinia';
+// import { ref, onMounted } from 'vue';
+// import { auth } from "../firebase";
 
-export const useRegistrationStore = defineStore('registration', () => {
-  const firstName = ref('');
-  const lastName = ref('');
-  const email = ref('');
-  const password = ref('');
-  const rePassword = ref('');
+// export const useStore = defineStore('store', () => {
+//   const user = ref(null);
+//   const cart = ref(new Map());
 
-  const setRegistrationData = (data) => {
-    firstName.value = data.firstName;
-    lastName.value = data.lastName;
-    email.value = data.email;
-    password.value = data.password;
-  };
+//   return { user, cart }
+// })
 
-  return {
-    firstName,
-    lastName,
-    email,
-    password,
-    setRegistrationData,
-  };
-});
+// export const userAuthorized = new Promise((resolve, reject) => {
+//   onAuthStateChanged(auth, user => {
+//     try {
+//       const store = useStore();
+//       store.user = user;
+//       const storedCart = localStorage.getItem(`cart_${store.user.email}`);
 
-export const useStore = defineStore('store', () => {
-  const cart = ref(new Map());
+//       store.cart = storedCart ? new Map(Object.entries(JSON.parse(storedCart))) : new Map();
+//       resolve();
+//     } catch (error) {
+//       reject();
+//     }
+//   })
+// })
 
-  function addToCart(id, movieData) {
-    cart.value.set(id, movieData);
-  }
-
-  function removeFromCart(id) {
-    cart.value.delete(id);
-  }
-
-  return {
-    cart,
-    addToCart,
-    removeFromCart,
-  };
-});
