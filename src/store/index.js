@@ -8,31 +8,11 @@ export const useRegistrationStore = defineStore('registration', () => {
   const password = ref('');
   const rePassword = ref('');
 
-  const persistData = () => {
-    localStorage.setItem('firstName', firstName.value);
-    localStorage.setItem('lastName', lastName.value);
-    localStorage.setItem('email', email.value);
-    localStorage.setItem('password', password.value);
-  };
-
-  const loadData = () => {
-    firstName.value = localStorage.getItem('firstName') || '';
-    lastName.value = localStorage.getItem('lastName') || '';
-    email.value = localStorage.getItem('email') || '';
-    password.value = localStorage.getItem('password') || '';
-  };
-
-  onMounted(() => {
-    loadData();
-  });
-
   const setRegistrationData = (data) => {
     firstName.value = data.firstName;
     lastName.value = data.lastName;
     email.value = data.email;
     password.value = data.password;
-    rePassword.value = ''; 
-    persistData(); 
   };
 
   return {
@@ -40,7 +20,6 @@ export const useRegistrationStore = defineStore('registration', () => {
     lastName,
     email,
     password,
-    rePassword,
     setRegistrationData,
   };
 });
@@ -48,5 +27,17 @@ export const useRegistrationStore = defineStore('registration', () => {
 export const useStore = defineStore('store', () => {
   const cart = ref(new Map());
 
-  return { cart }
-})
+  function addToCart(id, movieData) {
+    cart.value.set(id, movieData);
+  }
+
+  function removeFromCart(id) {
+    cart.value.delete(id);
+  }
+
+  return {
+    cart,
+    addToCart,
+    removeFromCart,
+  };
+});
