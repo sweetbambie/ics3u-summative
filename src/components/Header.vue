@@ -1,8 +1,8 @@
 <script setup>
 import { RouterLink } from 'vue-router';
-import { useRegistrationStore } from '../store';
+import { useStore } from '../store';
 
-const registrationStore = useRegistrationStore();
+const registrationStore = useStore();
 </script>
 
 <template>

@@ -18,7 +18,7 @@ async function registerByEmail() {
     const user = (await createUserWithEmailAndPassword(auth, email.value, password.value)).user;
     await updateProfile(user, { displayName: `${firstName.value} ${lastName.value}` });
     store.user = user;
-    router.push("/movies");
+    router.push("/movies/all");
   } catch (error) {
     alert("There was an error creating a user with email!");
   }
@@ -28,7 +28,7 @@ async function registerByGoogle() {
   try {
     const user = (await signInWithPopup(auth, new GoogleAuthProvider())).user;
     store.user = user;
-    router.push("/movies/all");
+    router.push("/movies");
   } catch (error) {
     alert("There was an error creating a user with Google!");
   }
@@ -39,17 +39,17 @@ async function registerByGoogle() {
   <Header />
   <div class="form-container">
     <h2>Create an Account</h2>
-      <form @submit.prevent="registerByEmail()">
-        <input type="text" placeholder="First Name" class="input-field" v-model="store.firstName" required />
-        <input type="text" placeholder="Last Name" class="input-field" v-model="store.lastName" required />
-        <input type="email" placeholder="Email" class="input-field" v-model="store.email" required />
-        <input type="password" placeholder="Password" class="input-field" v-model="store.password" required />
-        <input type="password" placeholder="Re-Enter Password" class="input-field" v-model="store.rePassword" required />
-        <button type="submit" class="register">Register</button>
-      </form>
-    </div>
-    <button @click="registerByGoogle()" class="button register">Register by Google</button>
-    <Footer />
+    <form @submit.prevent="registerByEmail">
+      <input type="text" placeholder="First Name" class="input-field" v-model="firstName" required />
+      <input type="text" placeholder="Last Name" class="input-field" v-model="lastName" required />
+      <input type="email" placeholder="Email" class="input-field" v-model="email" required />
+      <input type="password" placeholder="Password" class="input-field" v-model="password" required />
+      <input type="password" placeholder="Re-Enter Password" class="input-field" v-model="confirmPassword" required />
+      <button type="submit" class="register">Register</button>
+    </form>
+  </div>
+  <button @click="registerByGoogle" class="button register">Register by Google</button>
+  <Footer />
 </template>
 
 <style>

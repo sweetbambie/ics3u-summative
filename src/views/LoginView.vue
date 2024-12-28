@@ -1,4 +1,4 @@
-<script setup>
+<!-- <script setup>
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 import { useRegistrationStore } from '../store';
@@ -57,4 +57,7 @@ const handleLogin = () => {
   color: white;
   padding: 20px;
 }
-</style>
+</style> -->
+
+<script></script>
+<template></template>

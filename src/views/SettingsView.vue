@@ -1,10 +1,10 @@
 <script setup>
-import { useRegistrationStore } from '../store';
+// import { useRegistrationStore } from '../store';
 import { computed } from 'vue';
 import Header from '../components/Header.vue'
 import Footer from '../components/Footer.vue'
 
-const userStore = useRegistrationStore();
+// const userStore = useRegistrationStore();
 
 const firstName = computed({
   get: () => userStore.firstName,
