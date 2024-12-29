@@ -1,33 +1,26 @@
-import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { ref } from "vue"
+import { defineStore } from "pinia";
+import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
-import { onAuthStateChanged } from 'firebase/auth';
 
 export const useStore = defineStore('store', () => {
-  const user = ref(null); // User state
-  const cart = ref({}); // Cart state (use an object for reactivity)
+  const user = ref(null);
+  const cart = ref(new Map());
 
-  // Set user (update user.ref directly)
-  const setUser = (newUser) => {
-    user.value = newUser;
-  };
-
-  return { user, cart, setUser };
-});
+  return { user, cart }
+})
 
 export const userAuthorized = new Promise((resolve, reject) => {
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, user => {
     try {
       const store = useStore();
-      store.setUser(user); // Correctly update user
+      store.user = user;
+      const storedCart = localStorage.getItem(`cart_${store.user.email}`);
 
-      // Initialize cart from localStorage
-      const storedCart = localStorage.getItem(`cart_${store.user?.email}`);
-      store.cart.value = storedCart ? JSON.parse(storedCart) : {}; // Use object instead of Map
-
+      store.cart = storedCart ? new Map(Object.entries(JSON.parse(storedCart))) : new Map();
       resolve();
     } catch (error) {
-      reject(error);
+      reject();
     }
-  });
-});
+  })
+})
