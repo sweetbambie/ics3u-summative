@@ -1,7 +1,6 @@
 <script setup>
 import { RouterLink } from 'vue-router';
 import { useStore } from '../store';
-
 const registrationStore = useStore();
 </script>
 
