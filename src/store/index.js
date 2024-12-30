@@ -4,23 +4,18 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
 
 export const useStore = defineStore('store', () => {
-  const cart = ref(new Map()); // Reactive Map
+  const cart = ref(new Map()); 
 
-  // Add movie to cart
   function addToCart(id, movieData) {
     cart.value.set(id, movieData);
-    // Optionally sync with localStorage (or Firebase) here
-    localStorage.setItem(`cart`, JSON.stringify([...cart.value])); // Sync with localStorage
+    localStorage.setItem(`cart`, JSON.stringify([...cart.value])); 
   }
 
-  // Remove movie from cart
   function removeFromCart(id) {
     cart.value.delete(id);
-    // Optionally sync with localStorage (or Firebase) here
-    localStorage.setItem(`cart`, JSON.stringify([...cart.value])); // Sync with localStorage
+    localStorage.setItem(`cart`, JSON.stringify([...cart.value])); 
   }
 
-  // Load the cart from localStorage (or Firebase)
   function loadCart() {
     const storedCart = localStorage.getItem(`cart`);
     cart.value = storedCart ? new Map(Object.entries(JSON.parse(storedCart))) : new Map();
