@@ -1,32 +1,32 @@
-import { ref } from "vue"
+import { ref } from "vue";
 import { defineStore } from "pinia";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
 
 export const useStore = defineStore('store', () => {
-  const cart = ref(new Map()); 
+  const user = ref(null);
+  const cart = ref(new Map());
 
+  // Add movie to cart
   function addToCart(id, movieData) {
     cart.value.set(id, movieData);
-    localStorage.setItem(`cart`, JSON.stringify([...cart.value])); 
+    saveCartToLocalStorage();
   }
 
+  // Remove movie from cart
   function removeFromCart(id) {
     cart.value.delete(id);
-    localStorage.setItem(`cart`, JSON.stringify([...cart.value])); 
+    saveCartToLocalStorage();
   }
 
-  function loadCart() {
-    const storedCart = localStorage.getItem(`cart`);
-    cart.value = storedCart ? new Map(Object.entries(JSON.parse(storedCart))) : new Map();
+  // Save cart to localStorage
+  function saveCartToLocalStorage() {
+    if (user.value && user.value.email) {
+      localStorage.setItem(`cart_${user.value.email}`, JSON.stringify(Object.fromEntries(cart.value)));
+    }
   }
 
-  return {
-    cart,
-    addToCart,
-    removeFromCart,
-    loadCart
-  };
+  return { user, cart, addToCart, removeFromCart };
 });
 
 export const userAuthorized = new Promise((resolve, reject) => {
@@ -42,4 +42,4 @@ export const userAuthorized = new Promise((resolve, reject) => {
       reject();
     }
   })
-})
+});

@@ -14,7 +14,7 @@ const loginByEmail = async () => {
   try {
     const user = (await signInWithEmailAndPassword(auth, email.value, password.value)).user;
     store.user = user;
-    router.push("/movies/all");
+    router.push("/movies");
   } catch (error) {
     console.log(error);
     alert("There was an error signing in with email!");
