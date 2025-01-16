@@ -13,7 +13,7 @@ console.log(store.cart)
         <div class="item" v-for="([key, value]) in store.cart">
             <img :src="`https://image.tmdb.org/t/p/w500${value.url}`" />
             <h1>{{ value.title }}</h1>
-            <button @click="store.removeFromCart">Remove</button>
+            <button @click="store.removeFromCart(key)">Remove</button>
         </div>
     </div>
 </template>
