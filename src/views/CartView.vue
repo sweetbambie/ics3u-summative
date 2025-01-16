@@ -4,7 +4,7 @@ import { useRouter } from "vue-router";
 
 const store = useStore();
 const router = useRouter();
-
+console.log(store.cart)
 </script>
 
 <template>
@@ -13,7 +13,7 @@ const router = useRouter();
         <div class="item" v-for="([key, value]) in store.cart">
             <img :src="`https://image.tmdb.org/t/p/w500${value.url}`" />
             <h1>{{ value.title }}</h1>
-            <button @click="store.cart.delete(key)">Remove</button>
+            <button @click="store.removeFromCart">Remove</button>
         </div>
     </div>
 </template>

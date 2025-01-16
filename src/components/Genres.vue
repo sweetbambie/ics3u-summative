@@ -2,7 +2,7 @@
 import axios from "axios";
 import { ref, onMounted } from 'vue';
 import { useRouter } from "vue-router";
-import { useStore } from '../store'; // Pinia store
+import { useStore } from '../store';
 
 const props = defineProps(["genres"]);
 const router = useRouter();
@@ -29,26 +29,22 @@ onMounted(async () => {
 
 <template>
   <div class="movie-gallery">
-    <!-- Genre Selector -->
     <select v-model="selectedGenre" @change="getMovieByGenre">
       <option v-for="genre in props.genres" :value="genre.id" :key="genre.id">{{ genre.genreName }}</option>
     </select>
 
-    <!-- Movie List -->
     <div v-if="response" class="movie-list">
       <div v-for="movie in response.data.results" :key="movie.id" class="movie-card">
         <div @click="getMovieDetails(movie.id)">
           <img :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" alt="Movie Poster" class="movie-poster" />
           <p class="movie-title">{{ movie.title }}</p>
         </div>
-        
-        <!-- Buy Button (Add to Cart) -->
+
         <button v-if="!store.cart.has(movie.id)"
           @click="store.addToCart(movie.id, { title: movie.title, url: movie.poster_path })" class="buy">
           Buy
         </button>
-        
-        <!-- Added Button (Already in Cart) -->
+
         <button v-else @click="store.removeFromCart(movie.id)" class="buy">
           Added
         </button>

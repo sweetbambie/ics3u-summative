@@ -7,19 +7,16 @@ export const useStore = defineStore('store', () => {
   const user = ref(null);
   const cart = ref(new Map());
 
-  // Add movie to cart
   function addToCart(id, movieData) {
     cart.value.set(id, movieData);
     saveCartToLocalStorage();
   }
 
-  // Remove movie from cart
   function removeFromCart(id) {
     cart.value.delete(id);
     saveCartToLocalStorage();
   }
 
-  // Save cart to localStorage
   function saveCartToLocalStorage() {
     if (user.value && user.value.email) {
       localStorage.setItem(`cart_${user.value.email}`, JSON.stringify(Object.fromEntries(cart.value)));
