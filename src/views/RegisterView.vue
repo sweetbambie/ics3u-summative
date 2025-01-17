@@ -14,6 +14,27 @@ const router = useRouter();
 const store = useStore();
 
 async function registerByEmail() {
+  if (password1.value !== password2.value) {
+    alert("Passwords do not match!");
+    return;
+  }
+
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email.value, password1.value);
+    const user = userCredential.user;
+
+    await updateProfile(user, { displayName: `${name.value} ${lastName.value}` });
+
+    store.user = user;
+
+    router.push("/movies");
+  } catch (error) {
+    console.error(error);
+    alert("There was an error creating a user with email!");
+  }
+}
+
+async function registerByEmail() {
   try {
     const user = (await createUserWithEmailAndPassword(auth, email.value, password.value)).user;
     await updateProfile(user, { displayName: `${firstName.value} ${lastName.value}` });

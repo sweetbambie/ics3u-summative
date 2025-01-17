@@ -4,7 +4,7 @@ import { useRouter } from "vue-router";
 
 const store = useStore();
 const router = useRouter();
-console.log(store.cart)
+
 </script>
 
 <template>
@@ -14,6 +14,9 @@ console.log(store.cart)
             <img :src="`https://image.tmdb.org/t/p/w500${value.url}`" />
             <h1>{{ value.title }}</h1>
             <button @click="store.removeFromCart(key)">Remove</button>
+        </div>
+        <div class="checkout">
+            <button @click="store.clearCart()">Checkout</button>
         </div>
     </div>
 </template>
