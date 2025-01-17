@@ -19,9 +19,8 @@ export const useStore = defineStore('store', () => {
   }
 
   function clearCart() {
-    if (user.value && user.value.email) {
-      localStorage.removeItem(`cart_${user.value.email}`);
-    }
+    cart.value.clear();
+    saveCartToLocalStorage();
   }
 
   function saveCartToLocalStorage() {
@@ -30,7 +29,7 @@ export const useStore = defineStore('store', () => {
     }
   }
 
-  return { user, cart, addToCart, removeFromCart };
+  return { user, cart, addToCart, removeFromCart, clearCart };
 });
 
 export const userAuthorized = new Promise((resolve, reject) => {
