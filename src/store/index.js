@@ -18,6 +18,12 @@ export const useStore = defineStore('store', () => {
     saveCartToLocalStorage();
   }
 
+  function clearCart() {
+    if (user.value && user.value.email) {
+      localStorage.removeItem(`cart_${user.value.email}`);
+    }
+  }
+
   function saveCartToLocalStorage() {
     if (user.value && user.value.email) {
       localStorage.setItem(`cart_${user.value.email}`, JSON.stringify(Object.fromEntries(cart.value)));
