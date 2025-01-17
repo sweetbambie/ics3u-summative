@@ -14,7 +14,7 @@ const registrationStore = useStore();
             <RouterLink to="/login" class="button login">Login</RouterLink>
             <RouterLink to="/register" class="button register">Register</RouterLink>
           </li>
-          <li v-if="registrationStore.email">
+          <li v-if="$route.path === '/movies' || $route.path === '/setting' || $route.path === '/cart'">
             <h1 class="email">{{ `Hello ${registrationStore.firstName}!` }}</h1>
             <RouterLink to="/setting" class="button setting">Setting</RouterLink>
             <RouterLink to="/" class="button setting">Logout</RouterLink>
