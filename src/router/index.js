@@ -5,7 +5,7 @@ import LoginView from '../views/LoginView.vue';
 import MoviesView from '../views/MoviesView.vue';
 import DetailView from '../views/DetailsView.vue';
 import CartView from '../views/CartView.vue';
-import SettingView from '../views/SettingsView.vue';
+import SettingsView from '../views/SettingsView.vue';
 import ErrorView from '../views/ErrorView.vue';
 import { userAuthorized, useStore } from '../store';
 
@@ -16,7 +16,7 @@ const routes = [
   { path: '/movies', meta: { auth: true }, component: MoviesView },
   { path: '/movies/:id', meta: { auth: true }, component: DetailView },
   { path: '/cart', meta: { auth: true }, component: CartView },
-  { path: '/setting', meta: { auth: false }, component: SettingView},
+  { path: '/setting', meta: { auth: true }, component: SettingsView},
   { path: '/:pathMatch(.*)*', meta: { auth: false }, component: ErrorView, },
 ]
 

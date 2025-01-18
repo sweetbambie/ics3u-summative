@@ -1,54 +1,76 @@
 <script setup>
-// import { useRegistrationStore } from '../store';
-import { computed } from 'vue';
 import Header from '../components/Header.vue'
 import Footer from '../components/Footer.vue'
+import { useRouter } from "vue-router";
+import { useStore } from '../store';
+import { updatePassword, updateProfile } from "firebase/auth";
+import { auth } from "../firebase";
+import { ref } from 'vue';
 
-// const userStore = useRegistrationStore();
+const store = useStore();
+const router = useRouter();
+const name = ref(store.user?.displayName?.split(" ")[0] || '');
+const lastName = ref(store.user?.displayName?.split(" ")[1] || '');
+const email = ref(store.user?.email || '');
+const password = ref('');
 
-const firstName = computed({
-  get: () => userStore.firstName,
-  set: (value) => {
-    userStore.firstName = value;
-  },
-});
-const lastName = computed({
-  get: () => userStore.lastName,
-  set: (value) => {
-    userStore.lastName = value;
-  },
-});
-const email = computed({
-  get: () => userStore.email,
-  set: (value) => {
-    userStore.email = value;
-  },
-});
+const changeName = async () => {
+  try {
+    const user = auth.currentUser;
+    if (user) {
+      await updateProfile(user, { displayName: `${name.value} ${lastName.value}` });
 
-const updateProfileHandler = (event) => {
-  event.preventDefault();
-  userStore.setRegistrationData({
-    firstName: firstName.value,
-    lastName: lastName.value,
-    email: email.value,
-  });
+      store.user = user;
+      alert("Name updated successfully!");
+    }
+  } catch (error) {
+    console.error("Error occurred during name change:", error);
+    alert("There was an error updating the name. Please try again.");
+  }
+};
 
-  alert('Profile updated successfully!');
-}
+const changePassword = async () => {
+  try {
+    const user = auth.currentUser;
+    await updatePassword(user, password.value);
+    alert("Password updated successfully!");
+    password.value = '';
+  } catch (error) {
+    alert("There was an error updating the password. Please try again.");
+  }
+};
 </script>
 
 <template>
   <Header />
   <div class="form-container">
     <h1>User Profile</h1>
-    <form @submit="updateProfileHandler">
-      <label for="firstName">First Name:</label>
-      <input type="text" id="firstName" class="input-field" v-model="firstName" /><br /><br />
-      <label for="lastName">Last Name:</label>
-      <input type="text" id="lastName" class="input-field" v-model="lastName" /><br /><br />
-      <label for="email">Email:</label>
-      <input type="email" id="email" class="input-field" v-model="email" readonly/><br /><br />
-      <button type="submit" class="button">Save Changes</button>
+    <form @submit.prevent="changeName" class="form">
+      <div class="input-container">
+        <p>{{ `First Name: ${name}` }}</p>
+        <input v-model="name" type="text" id="name" class="input-field" />
+        <button type="submit" class="changeName">Change</button>
+      </div>
+    </form>
+    <form @submit.prevent="changeName" class="form">
+      <div class="input-container">
+        <p>{{ `Last Name: ${lastName}` }}</p>
+        <input v-model="lastName" type="text" id="lastName" class="input-field" />
+        <button type="submit" class="changeName">Change</button>
+      </div>
+    </form>
+    <div class="email">
+      <div class="input-container">
+        <p>{{ `Email:` }}</p>
+        <input v-model="email" type="email" id="email" class="input-field" readonly />
+      </div>
+    </div>
+    <form @submit.prevent="changePassword" class="form">
+      <div class="input-container">
+        <p>New Password</p>
+        <input v-model="password" type="password" id="password" class="input-field" required />
+        <button type="submit" class="changeName">Change Password</button>
+      </div>
     </form>
   </div>
   <Footer />
