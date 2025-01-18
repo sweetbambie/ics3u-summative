@@ -6,6 +6,7 @@ import { auth } from "../firebase";
 export const useStore = defineStore('store', () => {
   const user = ref(null);
   const cart = ref(new Map());
+  const checkoutCompleted = ref(false);
 
   function addToCart(id, movieData) {
     cart.value.set(id, movieData);
@@ -19,8 +20,23 @@ export const useStore = defineStore('store', () => {
   }
 
   function clearCart() {
-    cart.value.clear(); 
-    saveCartToLocalStorage(); 
+    cart.value.clear();  // Clear the cart
+    saveCartToLocalStorage();
+  
+    // Log when the checkout process starts
+    console.log("Checkout started:", checkoutCompleted.value);
+  
+    checkoutCompleted.value = true;
+  
+    // Log after setting checkoutCompleted to true
+    console.log("Checkout completed:", checkoutCompleted.value);
+  
+    setTimeout(() => {
+      checkoutCompleted.value = false;
+  
+      // Log after resetting checkoutCompleted
+      console.log("Checkout reset:", checkoutCompleted.value);
+    }, 3000);  // Thank you message stays for 3 seconds
   }  
 
   function saveCartToLocalStorage() {
