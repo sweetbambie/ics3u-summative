@@ -1,30 +1,38 @@
 <script setup>
+import { ref } from 'vue';
 import { useStore } from '../store';
 import { useRouter } from "vue-router";
+
 import Footer from "../components/Footer.vue";
 import Header from "../components/Header.vue";
 
 const store = useStore();
 const router = useRouter();
+const thank = ref(false);
+
+const handleCheckout = () => {
+    thank.value = true;
+    store.clearCart();
+};
 
 </script>
 
 <template>
     <Header />
-    <div class="cart">
+    <div class="cart" v-if="!thank">
         <h1>Shopping Cart</h1>
         <div class="item" v-for="([key, value]) in store.cart">
             <img :src="`https://image.tmdb.org/t/p/w500${value.url}`" />
             <h1>{{ value.title }}</h1>
             <button @click="store.removeFromCart(key)">Remove</button>
         </div>
-        <div v-if="store.checkoutCompleted" class="message">
-            <p>Thank you for your purchase!</p>
-        </div>
         <div class="checkout">
-            <button @click="store.clearCart()">Checkout</button>
+            <button @click="handleCheckout">Checkout</button>
         </div>
     </div>
+    <div v-else class="message">
+            <p>Thank you for your purchase!</p>
+        </div>
     <Footer />
 </template>
 
