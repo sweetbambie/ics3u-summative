@@ -7,7 +7,6 @@ import { useRouter } from "vue-router";
 export const useStore = defineStore('store', () => {
   const user = ref(null);
   const cart = ref(new Map());
-  const checkoutCompleted = ref(false);
   const router = useRouter(); 
 
   onAuthStateChanged(auth, (firebaseUser) => {
