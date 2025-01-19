@@ -21,7 +21,6 @@ async function registerByEmail() {
     alert("Passwords do not match!");
     return;
   }
-
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email.value, password1.value);
     const user = userCredential.user;
@@ -39,28 +38,22 @@ async function registerByEmail() {
 
 async function registerByGoogle() {
   try {
-    // If the user is already logged in, redirect to movies page
     if (store.user) {
       router.push("/movies");
       return;
     }
 
-    // Sign in with Google
     const userCredential = await signInWithPopup(auth, new GoogleAuthProvider());
     const user = userCredential.user;
 
-    // Check if the user already exists in the store (if the user is already signed up)
     if (store.user && store.user.email === user.email) {
-      // If user already exists, inform them and exit the registration flow
       alert("This account is already registered!");
       router.push("/login");
       return;
     }
 
-    // Set the user in the store (after successful Google login)
     store.user = user;
 
-    // Redirect to the movies page
     router.push("/movies");
   } catch (error) {
     console.error(error);
@@ -149,4 +142,3 @@ async function registerByGoogle() {
   color: hotpink;
 }
 </style>
-
