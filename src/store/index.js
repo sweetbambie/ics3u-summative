@@ -1,18 +1,30 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../firebase";
+import { useRouter } from "vue-router";
 
 export const useStore = defineStore('store', () => {
   const user = ref(null);
   const cart = ref(new Map());
   const checkoutCompleted = ref(false);
+  const router = useRouter(); 
+
+  onAuthStateChanged(auth, (firebaseUser) => {
+    if (firebaseUser) {
+      user.value = firebaseUser;
+      const storedCart = localStorage.getItem(`cart_${firebaseUser.email}`);
+      cart.value = storedCart ? new Map(Object.entries(JSON.parse(storedCart))) : new Map();
+    } else {
+      user.value = null;
+      cart.value = new Map();
+    }
+  });
 
   function addToCart(id, movieData) {
     cart.value.set(id, movieData);
     saveCartToLocalStorage();
   }
-
 
   function removeFromCart(id) {
     cart.value.delete(id);
@@ -20,24 +32,9 @@ export const useStore = defineStore('store', () => {
   }
 
   function clearCart() {
-    cart.value.clear();  
+    cart.value.clear();
     saveCartToLocalStorage();
-  
-
-    console.log("Checkout started:", checkoutCompleted.value);
-  
-    checkoutCompleted.value = true;
-  
-
-    console.log("Checkout completed:", checkoutCompleted.value);
-  
-    setTimeout(() => {
-      checkoutCompleted.value = false;
-  
-
-      console.log("Checkout reset:", checkoutCompleted.value);
-    }, 3000);  
-  }  
+  }
 
   function saveCartToLocalStorage() {
     if (user.value && user.value.email) {
@@ -45,20 +42,32 @@ export const useStore = defineStore('store', () => {
     }
   }
 
-  return { user, cart, addToCart, removeFromCart, clearCart };
-});
-
-export const userAuthorized = new Promise((resolve, reject) => {
-  onAuthStateChanged(auth, user => {
+  const logout = async () => {
     try {
-      const store = useStore();
-      store.user = user;
-      const storedCart = localStorage.getItem(`cart_${store.user.email}`);
+      await signOut(auth);
 
-      store.cart = storedCart ? new Map(Object.entries(JSON.parse(storedCart))) : new Map();
-      resolve();
+      localStorage.removeItem(`cart_${user.value?.email}`);
+
+      router.push("/"); 
     } catch (error) {
-      reject();
+      console.error("Error during logout:", error);
     }
-  })
+  };
+
+  const userAuthorized = new Promise((resolve, reject) => {
+    onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        user.value = firebaseUser;
+        const storedCart = localStorage.getItem(`cart_${firebaseUser.email}`);
+        cart.value = storedCart ? new Map(Object.entries(JSON.parse(storedCart))) : new Map();
+        resolve();
+      } else {
+        user.value = null;
+        cart.value = new Map();
+        resolve();
+      }
+    }, reject);
+  });
+
+  return { user, cart, addToCart, removeFromCart, clearCart, logout, userAuthorized};
 });
