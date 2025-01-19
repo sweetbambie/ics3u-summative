@@ -37,6 +37,10 @@ const handleCheckout = () => {
 </template>
 
 <style scoped>
+
+.message {
+    color: hotpink;
+}
 h1 {
     color: hotpink;
     text-align: center;
