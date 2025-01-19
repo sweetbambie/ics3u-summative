@@ -85,7 +85,7 @@ const changePassword = async () => {
   margin-top: 50px;
 } 
 
-.form-container form {
+.form-container form{
   display: flex;
   flex-direction: column;
   width: 100%;

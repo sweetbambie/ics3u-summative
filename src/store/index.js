@@ -20,23 +20,23 @@ export const useStore = defineStore('store', () => {
   }
 
   function clearCart() {
-    cart.value.clear();  // Clear the cart
+    cart.value.clear();  
     saveCartToLocalStorage();
   
-    // Log when the checkout process starts
+
     console.log("Checkout started:", checkoutCompleted.value);
   
     checkoutCompleted.value = true;
   
-    // Log after setting checkoutCompleted to true
+
     console.log("Checkout completed:", checkoutCompleted.value);
   
     setTimeout(() => {
       checkoutCompleted.value = false;
   
-      // Log after resetting checkoutCompleted
+
       console.log("Checkout reset:", checkoutCompleted.value);
-    }, 3000);  // Thank you message stays for 3 seconds
+    }, 3000);  
   }  
 
   function saveCartToLocalStorage() {

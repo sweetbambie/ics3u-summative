@@ -2,7 +2,7 @@
 import axios from "axios";
 import { ref, onMounted } from 'vue';
 import { useRouter } from "vue-router";
-import { useStore } from '../store';
+import { useStore } from '../store'; 
 
 const props = defineProps(["genres"]);
 const router = useRouter();
@@ -11,17 +11,14 @@ const store = useStore();
 const selectedGenre = ref(28);
 const response = ref(null);
 
-// Fetch movies by genre
 async function getMovieByGenre() {
   response.value = await axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=${import.meta.env.VITE_TMDB_KEY}&include_adult=false&with_genres=${selectedGenre.value}`);
 }
 
-// Navigate to movie details page
 function getMovieDetails(id) {
   router.push(`/movies/${id}`);
 }
 
-// Load movies on component mount
 onMounted(async () => {
   response.value = await axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=${import.meta.env.VITE_TMDB_KEY}&include_adult=false&with_genres=${selectedGenre.value}`);
 })
@@ -32,19 +29,16 @@ onMounted(async () => {
     <select v-model="selectedGenre" @change="getMovieByGenre">
       <option v-for="genre in props.genres" :value="genre.id" :key="genre.id">{{ genre.genreName }}</option>
     </select>
-
     <div v-if="response" class="movie-list">
       <div v-for="movie in response.data.results" :key="movie.id" class="movie-card">
         <div @click="getMovieDetails(movie.id)">
           <img :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" alt="Movie Poster" class="movie-poster" />
           <p class="movie-title">{{ movie.title }}</p>
         </div>
-
         <button v-if="!store.cart.has(movie.id)"
           @click="store.addToCart(movie.id, { title: movie.title, url: movie.poster_path })" class="buy">
           Buy
         </button>
-
         <button v-else @click="store.removeFromCart(movie.id)" class="buy">
           Added
         </button>

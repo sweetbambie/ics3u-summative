@@ -1,4 +1,5 @@
 <script setup>
+import Footer from "../components/Footer.vue";
 import { RouterLink, useRouter } from 'vue-router';
 import { ref } from 'vue';
 import { useStore } from "../store"

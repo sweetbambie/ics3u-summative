@@ -1,6 +1,8 @@
 <script setup>
 import { useStore } from '../store';
 import { useRouter } from "vue-router";
+import Footer from "../components/Footer.vue";
+import Header from "../components/Header.vue";
 
 const store = useStore();
 const router = useRouter();
@@ -8,6 +10,7 @@ const router = useRouter();
 </script>
 
 <template>
+    <Header />
     <div class="cart">
         <h1>Shopping Cart</h1>
         <div class="item" v-for="([key, value]) in store.cart">
@@ -22,6 +25,7 @@ const router = useRouter();
             <button @click="store.clearCart()">Checkout</button>
         </div>
     </div>
+    <Footer />
 </template>
 
 <style scoped>

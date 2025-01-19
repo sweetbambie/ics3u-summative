@@ -10,3 +10,4 @@ app.use(createPinia());
 app.mount('#app');
 
 const apiKey = import.meta.env.VITE_TMDB_KEY;
+createApp(App).use(createPinia()).use(router).mount('#app');
