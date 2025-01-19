@@ -38,6 +38,12 @@ async function registerByEmail() {
 }
 
 async function registerByGoogle() {
+
+  if (store.user) {
+    router.push("/login");
+    return; 
+  }
+
   try {
     const userCredential = await signInWithPopup(auth, new GoogleAuthProvider());
     const user = userCredential.user;
@@ -47,7 +53,7 @@ async function registerByGoogle() {
     router.push("/movies");
   } catch (error) {
     console.error(error);
-    alert("There was an error creating a user with Google!");
+    alert("There was an error signing in with Google!");
   }
 }
 </script>
