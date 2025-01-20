@@ -25,13 +25,26 @@ const loginByEmail = async () => {
 
 const loginByGoogle = async () => {
   try {
-    const user = (await signInWithPopup(auth, new GoogleAuthProvider())).user;
-    store.user = user;
-    router.push("/movies");
+    // Step 1: Sign in with Google
+    const userCredential = await signInWithPopup(auth, new GoogleAuthProvider());
+    const user = userCredential.user;
+
+    // Step 2: Check if the user is already registered (i.e., exists in the store or backend)
+    if (store.user && store.user.email === user.email) {
+      // The user is registered, proceed to login
+      store.user = user;
+      router.push("/movies");
+    } else {
+      // If user is not registered, prompt them to register
+      alert("This account is not registered. Please register first.");
+      router.push("/register");  // Redirect to the registration page (you can customize the route)
+    }
   } catch (error) {
+    console.error(error);
     alert("There was an error signing in with Google!");
   }
 };
+
 </script>
 
 <template>
