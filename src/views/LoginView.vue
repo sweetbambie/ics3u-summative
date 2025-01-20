@@ -4,7 +4,7 @@ import Footer from "../components/Footer.vue";
 import { RouterLink, useRouter } from 'vue-router';
 import { ref } from 'vue';
 import { useStore } from "../store"
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, fetchSignInMethodsForEmail } from "firebase/auth";
 import { auth } from "../firebase"
 
 const store = useStore();
@@ -13,13 +13,31 @@ const email = ref('');
 const password = ref('');
 
 const loginByEmail = async () => {
-  try {
+  try 
+  {
+    const registeredEmails = await fetchSignInMethodsForEmail(auth, email.value);
+    if (registeredEmails.length === 0) 
+    {
+      alert("This email is not registered. Please register first.");
+      router.push("/register");
+      return;
+    }
+
     const user = (await signInWithEmailAndPassword(auth, email.value, password.value)).user;
     store.user = user;
     router.push("/movies");
-  } catch (error) {
-    console.log(error);
-    alert("There was an error signing in with email!");
+  } 
+  catch (error) 
+  {
+    if (error.code === 'auth/wrong-password') 
+    {
+      alert("Invalid password. Please try again.");
+    }
+    else 
+    {
+      console.error(error);
+      alert("There was an error signing in with email!");
+    }
   }
 };
 
@@ -37,7 +55,6 @@ const loginByGoogle = async () => {
     } else {
       // If user is not registered, prompt them to register
       alert("This account is not registered. Please register first.");
-      router.push("/register");  // Redirect to the registration page (you can customize the route)
     }
   } catch (error) {
     console.error(error);

@@ -25,16 +25,22 @@ async function registerByEmail() {
     const userCredential = await createUserWithEmailAndPassword(auth, email.value, password1.value);
     const user = userCredential.user;
 
-    await updateProfile(user, { displayName: `${name.value} ${lastName.value}` });
+    await updateProfile(user, { displayName: `${firstName.value} ${lastName.value}` });
 
     store.user = user;
 
     router.push("/movies");
   } catch (error) {
-    console.error(error);
-    alert("There was an error creating a user with email!");
+    if (error.code === "auth/email-already-in-use") {
+      alert("This email is already in use. Please log in.");
+      router.push("/login");
+    } else {
+      console.error(error);
+      alert(error.code);
+    }
   }
 }
+
 
 async function registerByGoogle() {
   try {
@@ -57,7 +63,7 @@ async function registerByGoogle() {
     router.push("/movies");
   } catch (error) {
     console.error(error);
-    alert("There was an error creating a user with Google!");
+    alert(error.code);
   }
 }
 </script>
@@ -70,8 +76,8 @@ async function registerByGoogle() {
       <input type="text" placeholder="First Name" class="input-field" v-model="firstName" required />
       <input type="text" placeholder="Last Name" class="input-field" v-model="lastName" required />
       <input type="email" placeholder="Email" class="input-field" v-model="email" required />
-      <input type="password" placeholder="Password" class="input-field" v-model="password" required />
-      <input type="password" placeholder="Re-Enter Password" class="input-field" v-model="confirmPassword" required />
+      <input type="password" placeholder="Password" class="input-field" v-model="password1" required />
+      <input type="password" placeholder="Re-Enter Password" class="input-field" v-model="password2" required />
       <button type="submit" class="register">Register</button>
     </form>
   </div>

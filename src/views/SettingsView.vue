@@ -14,31 +14,41 @@ const lastName = ref(store.user?.displayName?.split(" ")[1] || '');
 const email = ref(store.user?.email || '');
 const password = ref('');
 
+const isEmailProvider = store.user?.providerData.some(provider => provider.providerId === 'password');
+
 const changeName = async () => {
-  try {
-    const user = auth.currentUser;
-    if (user) {
-      await updateProfile(user, { displayName: `${name.value} ${lastName.value}` });
-
-      store.user = user;
-      alert("Name updated successfully!");
+    if (!isEmailProvider) {
+      alert("You can only change your information if you signed in through email.");
+      return;
     }
-  } catch (error) {
-    console.error("Error occurred during name change:", error);
-    alert("There was an error updating the name. Please try again.");
-  }
-};
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        await updateProfile(user, { displayName: `${name.value} ${lastName.value}` });
 
-const changePassword = async () => {
-  try {
-    const user = auth.currentUser;
-    await updatePassword(user, password.value);
-    alert("Password updated successfully!");
-    password.value = '';
-  } catch (error) {
-    alert("There was an error updating the password. Please try again.");
-  }
-};
+        store.user = user;
+        alert("Name updated successfully!");
+      }
+    } catch (error) {
+      console.error("Error occurred during name change:", error);
+      alert("There was an error updating the name. Please try again.");
+    }
+  };
+
+  const changePassword = async () => {
+    if (!isEmailProvider) {
+      alert("You can only change your password if you signed in through email.");
+      return;
+    }
+    try {
+      const user = auth.currentUser;
+      await updatePassword(user, password.value);
+      alert("Password updated successfully!");
+      password.value = '';
+    } catch (error) {
+      alert("There was an error updating the password. Please try again.");
+    }
+  };
 </script>
 
 <template>
